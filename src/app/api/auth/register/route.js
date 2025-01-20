@@ -7,7 +7,7 @@ function generateConfirmationEmail() {
   return Math.floor(100000 + Math.random() * 900000).toString(); // получаем случайный номер из 6-значного диапазона
 }
 
-async function sendConfirmationEmail(email, code) {
+async function sendConfirmationEmail(email, code, firstName, lastName) {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
@@ -96,7 +96,7 @@ async function sendConfirmationEmail(email, code) {
           <h1>Подтверждение регистрации</h1>
         </div>
         <div class="content">
-          <h2>Здравствуйте!</h2>
+          <h2>Здравствуйте, ${firstName} ${lastName}!</h2>
           <p>Благодарим вас за регистрацию на нашем сайте. Для завершения регистрации, пожалуйста, введите следующий код подтверждения:</p>
           <div class="code">${code}</div>
           <p>Если вы не регистрировались на нашем сайте, пожалуйста, проигнорируйте это письмо.</p>
@@ -187,7 +187,7 @@ export async function POST(req) {
     }
 
     // отправка письма с кодом подтверждения
-    await sendConfirmationEmail(email, confirmationCode);
+    await sendConfirmationEmail(email, confirmationCode, firstName, lastName);
 
     // проверка на длину пароля
     if (password.lenght <= 6) {
