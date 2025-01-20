@@ -158,7 +158,7 @@ export default function RegisterPage() {
       </form>
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-neutral-800 p-8 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6 text-center">
               Введите код подтверждения
             </h2>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
               type="text"
               value={confirmationCode}
               onChange={(e) => setConfirmationCode(e.target.value)}
-              className="w-full p-2 bg-gray-700 rounded-lg text-white text-center text-2xl"
+              className="w-full p-2 bg-neutral-700 rounded-lg text-white text-center text-2xl"
               maxLength={6}
               placeholder="XXXXXX"
               required
