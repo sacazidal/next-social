@@ -52,10 +52,9 @@ export async function POST(req) {
         password,
       });
 
-    if (authError) {
+    if (authError || !authData.session) {
       return NextResponse.json(
         { error: "Ошибка при авторизации" },
-        { message: "Ошибка при авторизации" },
         { status: 500 }
       );
     }

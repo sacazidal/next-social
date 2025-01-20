@@ -1,3 +1,9 @@
+import ProtectedRoute from "@/components/ProtectedRoute";
+
 export default function Home() {
-  return <></>;
+  return (
+    <ProtectedRoute>
+      <>Ваш профиль</>
+    </ProtectedRoute>
+  );
 }

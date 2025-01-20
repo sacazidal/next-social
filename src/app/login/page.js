@@ -4,6 +4,8 @@ import InputForm from "@/components/InputForm";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { NextResponse } from "next/server";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -14,7 +16,7 @@ export default function LoginPage() {
 
   const { login } = useAuth();
 
-  const route = useRouter();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +42,19 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        login(data.token);
-        route.push("/");
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser(data.token);
+        if (error) {
+          return NextResponse.json(
+            { error: "Ошибка при авторизации" },
+            { status: 500 }
+          );
+        }
+
+        login(data.token, data.user);
+        router.push("/");
       } else {
         setError(data.message);
       }
