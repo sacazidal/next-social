@@ -14,7 +14,7 @@ const Header = () => {
 
   return (
     <header className="py-4">
-      <div className="container mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-y-3">
+      <div className="container mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-y-3 px-5 lg:px-0">
         <button
           className="flex gap-x-3 items-center justify-center md:justify-start w-full"
           onClick={linkClick}

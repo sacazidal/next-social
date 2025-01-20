@@ -11,9 +11,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ru">
       <body className={"antialiased bg-neutral-900"}>
-        <div className="px-4 lg:px-0 flex flex-col h-screen">
+        <div className="flex flex-col h-screen">
           <Header />
-          <div className="flex-grow container mx-auto">{children}</div>
+          <div className="flex-grow container mx-auto px-4 lg:px-0">
+            {children}
+          </div>
           <Footer />
         </div>
       </body>
