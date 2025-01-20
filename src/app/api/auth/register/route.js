@@ -215,7 +215,10 @@ export async function POST(req) {
 
     if (insertError) {
       return NextResponse.json(
-        { error: "Ошибка при сохранении пользователя в БД" },
+        {
+          error: "Ошибка при сохранении пользователя в БД",
+          details: error.message,
+        },
         { status: 500 }
       );
     }
@@ -224,7 +227,7 @@ export async function POST(req) {
     await sendConfirmationEmail(email, confirmationCode, firstName, lastName);
 
     // проверка на длину пароля
-    if (password.lenght <= 6) {
+    if (password.length <= 6) {
       return NextResponse.json(
         { message: "Пароль должен быть не менее 6 символов" },
         { status: 400 }

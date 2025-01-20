@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import "./globals.css";
 import Header from "@/components/Header";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {
   title: "Next Social Network",
@@ -12,11 +13,13 @@ export default function RootLayout({ children }) {
     <html lang="ru">
       <body className={"antialiased bg-neutral-900"}>
         <div className="flex flex-col h-screen">
-          <Header />
-          <div className="flex-grow container mx-auto px-4 lg:px-0">
-            {children}
-          </div>
-          <Footer />
+          <AuthProvider>
+            <Header />
+            <div className="flex-grow container mx-auto px-4 lg:px-0">
+              {children}
+            </div>
+            <Footer />
+          </AuthProvider>
         </div>
       </body>
     </html>
