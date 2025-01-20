@@ -118,33 +118,17 @@ export async function POST(req) {
 
   try {
     // проверка наличия обязательных полей
-    if (!firstName) {
+    const fields = [
+      { key: firstName, name: "Имя" },
+      { key: lastName, name: "Фамилия" },
+      { key: email, name: "Email" },
+      { key: username, name: "Логин" },
+      { key: password, name: "Пароль" },
+    ];
+    const missingField = fields.find((field) => !field.key);
+    if (missingField) {
       return NextResponse.json(
-        { message: "Заполните поле 'Имя'" },
-        { status: 400 }
-      );
-    }
-    if (!lastName) {
-      return NextResponse.json(
-        { message: "Заполните поле 'Фамилия'" },
-        { status: 400 }
-      );
-    }
-    if (!email) {
-      return NextResponse.json(
-        { message: "Заполните поле 'Email'" },
-        { status: 400 }
-      );
-    }
-    if (!username) {
-      return NextResponse.json(
-        { message: "Заполните поле 'Логин'" },
-        { status: 400 }
-      );
-    }
-    if (!password) {
-      return NextResponse.json(
-        { message: "Заполните поле 'Пароль'" },
+        { message: `Заполните поле '${missingField.name}'` },
         { status: 400 }
       );
     }
