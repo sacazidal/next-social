@@ -13,11 +13,22 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState("");
+  const [lastRequestTime, setLastRequestTime] = useState(0);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const currentTime = Date.now();
+    if (currentTime - lastRequestTime < 5000) {
+      setError("Пожалуйста, подождите 5 секунд перед повторным запросом.");
+      return;
+    }
+
+    setLastRequestTime(currentTime);
+    setIsButtonDisabled(true);
 
     try {
       const response = await fetch("/api/auth/register", {
@@ -38,16 +49,30 @@ export default function RegisterPage() {
 
       if (response.ok) {
         setIsModalOpen(true);
+        setError("");
       } else {
         setError(data.message);
       }
     } catch (error) {
       console.error(error);
       setError("При регистрации произошла ошибка. Попробуйте еще раз.");
+    } finally {
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 5000);
     }
   };
 
   const handleConfirmation = async () => {
+    const currentTime = Date.now();
+    if (currentTime - lastRequestTime < 5000) {
+      setError("Пожалуйста, подождите 5 секунд перед повторным запросом.");
+      return;
+    }
+
+    setLastRequestTime(currentTime);
+    setIsButtonDisabled(true);
+
     try {
       const response = await fetch("/api/auth/confirm", {
         method: "POST",
@@ -69,6 +94,10 @@ export default function RegisterPage() {
       }
     } catch (error) {
       setError("Ошибка при подтверждении");
+    } finally {
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 5000);
     }
   };
 
@@ -120,6 +149,7 @@ export default function RegisterPage() {
         <div className="flex w-full items-center justify-center">
           <button
             type="submit"
+            disabled={isButtonDisabled}
             className="mt-3 border-2 rounded-lg p-2 w-full md:w-1/2 flex items-center justify-center"
           >
             Зарегистироваться
@@ -143,6 +173,7 @@ export default function RegisterPage() {
             />
             <button
               onClick={handleConfirmation}
+              disabled={isButtonDisabled}
               className="w-full bg-blue-600 text-white p-2 rounded-lg mt-4 hover:bg-blue-700 transition"
             >
               Подтвердить
