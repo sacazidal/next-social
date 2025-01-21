@@ -191,7 +191,7 @@ export async function POST(req) {
     }
 
     // проверка на длину пароля
-    if (password.length < 5) {
+    if (password.length < 6) {
       return NextResponse.json(
         { message: "Пароль должен быть не менее 6 символов" },
         { status: 400 }
