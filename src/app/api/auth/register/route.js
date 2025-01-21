@@ -190,11 +190,22 @@ export async function POST(req) {
       );
     }
 
-    // хэширование пароля
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // проверка на длину пароля
+    if (password.length < 5) {
+      return NextResponse.json(
+        { message: "Пароль должен быть не менее 6 символов" },
+        { status: 400 }
+      );
+    }
 
     // генерация кода подтверждения
     const confirmationCode = generateConfirmationEmail();
+
+    // отправка письма с кодом подтверждения
+    await sendConfirmationEmail(email, confirmationCode, firstName, lastName);
+
+    // хэширование пароля
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // сохранение нового пользователя в БД
     const { error: insertError } = await supabase
@@ -222,18 +233,6 @@ export async function POST(req) {
         { status: 500 }
       );
     }
-
-    // отправка письма с кодом подтверждения
-    await sendConfirmationEmail(email, confirmationCode, firstName, lastName);
-
-    // проверка на длину пароля
-    if (password.length <= 6) {
-      return NextResponse.json(
-        { message: "Пароль должен быть не менее 6 символов" },
-        { status: 400 }
-      );
-    }
-
     // успешный ответ
     return NextResponse.json(
       { message: "Письмо с кодом подтверждения отправлено на ваш email" },
