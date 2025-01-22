@@ -1,6 +1,7 @@
 import { supabase } from "@/app/lib/supabaseServer";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { error } from "console";
 
 export async function POST(req) {
   const { username, password } = await req.json();
@@ -11,13 +12,16 @@ export async function POST(req) {
     // Получаем пользователя из базы данных
     const { data: userData, error: userError } = await supabase
       .from("users")
-      .select("id, username, first_name, last_name, email, password_hash")
+      .select("id, email, username, password_hash, first_name, last_name")
       .eq("username", username)
       .single();
 
     if (userError || !userData) {
       return NextResponse.json(
-        { message: "Неверный логин или пароль" },
+        {
+          message: "Неверный логин или пароль(пользователь не найден)",
+          error: "Неверный логин или пароль(пользователь не найден)",
+        },
         { status: 404 }
       );
     }
@@ -29,7 +33,10 @@ export async function POST(req) {
     );
     if (!isPasswordValid) {
       return NextResponse.json(
-        { message: "Неверный логин или пароль" },
+        {
+          message: "Неверный логин или пароль(неверный пароль)",
+          error: "Неверный логин или пароль(пользователь не найден)",
+        },
         { status: 401 }
       );
     }

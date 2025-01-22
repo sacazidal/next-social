@@ -167,9 +167,6 @@ export async function POST(req) {
       );
     }
 
-    // получение ip address
-    const ip = req.headers.get("x-user-ip");
-
     // проверка уникальности email и username
     const { data: existingUser, error: userError } = await supabase
       .from("users")
@@ -204,35 +201,6 @@ export async function POST(req) {
     // отправка письма с кодом подтверждения
     await sendConfirmationEmail(email, confirmationCode, firstName, lastName);
 
-    // хэширование пароля
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // сохранение нового пользователя в БД
-    const { error: insertError } = await supabase
-      .from("users")
-      .insert([
-        {
-          email,
-          username,
-          password_hash: hashedPassword,
-          first_name: firstName,
-          last_name: lastName,
-          confirmation_code: confirmationCode,
-          confirmed: false,
-          ip_address: ip,
-        },
-      ])
-      .select();
-
-    if (insertError) {
-      return NextResponse.json(
-        {
-          error: "Ошибка при сохранении пользователя в БД",
-          details: error.message,
-        },
-        { status: 500 }
-      );
-    }
     // успешный ответ
     return NextResponse.json(
       { message: "Письмо с кодом подтверждения отправлено на ваш email" },
